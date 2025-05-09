@@ -1,0 +1,27 @@
+# Ignore build output
+/Debug/
+/Release/
+/build/
+
+# Ignore CubeIDE metadata
+/.metadata/
+/.project
+.cproject
+.settings/language.settings.xml
+
+# Ignore user-specific files
+*.launch
+*.swp
+*.swo
+*.bak
+*.orig
+
+# Ignore generated binaries
+*.elf
+*.hex
+*.bin
+*.map
+*.list
+
+# Ignore backup files
+*~
