@@ -113,7 +113,7 @@ void scan_adc_channels(void) {
     HAL_ADC_Stop(&hadc1);
 }
 
-float read_temperature(void) {
+float read_adc_values(void) {
 	scan_adc_channels();
 	uint16_t adc_temp = adcBuffer[0];
 	uint16_t adc_batt = adcBuffer[1];
@@ -123,7 +123,6 @@ float read_temperature(void) {
     int Temperature_C = (temp_mV - 500) / 10;
 
     //For Battery conversion
-
     // Extrapolated estimation model: battery % = m * voltage + c
 	// From 1.9V = 0% and 2.8V = 100%
 	// => m = 100 / (2.8 - 1.9) = 111.111, c = -1.4 * m = -155.55 (was -1.9*m=-211.11)
@@ -136,6 +135,7 @@ float read_temperature(void) {
     char msg[100];
 	  snprintf(msg, sizeof(msg), "ADC_IN1: %d, Temp_mV: %d mV, Temp: %d C --- ADC_IN5: %d, Batt_mV: %d mV, Battery: %.1f%%\r\n", adc_temp, (int)temp_mV, Temperature_C, adc_batt, (int)batt_mV, battery_percent);
 	  HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+
 	return Temperature_C;
 }
 /* USER CODE END 0 */
@@ -190,7 +190,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  float temp = read_temperature();
+	  float temp = read_adc_values();
 
 	        if (wake_flag)
 	        {
@@ -610,7 +610,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	if (GPIO_Pin == B1_Pin)  // Adjust if your B1 is on another pin
+	if (GPIO_Pin == B1_Pin)
 	    {
 	        wake_from_button = 1;
 	        wake_flag = 1;
