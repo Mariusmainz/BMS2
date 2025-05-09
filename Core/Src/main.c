@@ -126,9 +126,9 @@ float read_temperature(void) {
 
     // Extrapolated estimation model: battery % = m * voltage + c
 	// From 1.9V = 0% and 2.8V = 100%
-	// => m = 100 / (2.8 - 1.9) = 111.111, c = -1.9 * m = -211.11
-    float batt_mV = (adc_batt / 4095.0) * 3.3f;
-	float battery_percent = 111.111f * batt_mV - 211.111f;
+	// => m = 100 / (2.8 - 1.9) = 111.111, c = -1.4 * m = -155.55 (was -1.9*m=-211.11)
+    float batt_mV = (adc_batt / 4095.0) * 3300;
+	float battery_percent = (0.111f * batt_mV - 155.555f);
 
 	if (battery_percent > 100.0f) battery_percent = 100.0;
 	if (battery_percent < 0.0f) battery_percent = 0.0;
