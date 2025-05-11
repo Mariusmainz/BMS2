@@ -83,8 +83,11 @@ static void MX_COMP4_Init(void);
 void enter_stop_mode(void) {
     HAL_SuspendTick();
     HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
-    HAL_ResumeTick();
-    SystemClock_Config();  // Reinitialize clocks
+}
+
+void exit_stop_mode(void){
+	HAL_ResumeTick();
+	SystemClock_Config();  // Reinitialize clocks
 }
 
 void scan_adc_channels(void) {
@@ -121,6 +124,7 @@ float read_adc_values(void) {
 	//For Temperature conversion
     float temp_mV = ((float)adc_temp / 4095.0) * 3300;
     int Temperature_C = (temp_mV - 500) / 10;
+
 
     //For Battery conversion
     // Extrapolated estimation model: battery % = m * voltage + c
@@ -612,8 +616,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (GPIO_Pin == B1_Pin)
 	    {
-	        wake_from_button = 1;
-	        wake_flag = 1;
+		exit_stop_mode();
+		wake_from_button = 1;
+		wake_flag = 1;
 	    }
 }
 
@@ -621,13 +626,10 @@ void HAL_COMP_TriggerCallback(COMP_HandleTypeDef *hcomp)
 {
     if (hcomp->Instance == COMP2)
     {
-    	//const char* msg = "COMP2 interrupt triggered!\r\n";
-		//HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
-
+    	exit_stop_mode();
     	wake_from_temp = 1;
         wake_flag = 1;
     }
-
 }
 
 
