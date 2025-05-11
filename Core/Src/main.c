@@ -35,6 +35,7 @@
 #define TEMP_HIGH_THRESHOLD 24
 #define TEMP_LOW_THRESHOLD 20
 #define SLEEP_TIME_MS 5000
+#define WEIGHTED_GAIN 1.18
 
 /* USER CODE END PD */
 
@@ -126,6 +127,7 @@ float read_adc_values(void)
 
   // For Temperature conversion
   float temp_mV = ((float)adc_temp / 4095.0) * 3300;
+  float temp_mV_scaled = temp_mV * (WEIGHTED_GAIN);
   int Temperature_C = (temp_mV - 500) / 10;
 
   // For Battery conversion
